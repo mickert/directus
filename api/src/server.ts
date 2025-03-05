@@ -162,10 +162,14 @@ export async function startServer(): Promise<void> {
 	const server = await createServer();
 
 	const host = env['HOST'] as string;
-	const path = env['UNIX_SOCKET_PATH'] as string | undefined;
+	let path = env['UNIX_SOCKET_PATH'] as string | undefined;
 	const port = env['PORT'] as string;
 
 	let listenOptions: ListenOptions;
+
+	if (!path && port && port.length && isNaN(port)) {
+		path = port;
+	}
 
 	if (path) {
 		listenOptions = { path };
